@@ -1,0 +1,25 @@
+body {
+color:white;
+font-family: Gotham, Helvetica Neue, Helvetica, Arial," sans-serif";
+height: 100%;}
+
+
+a {
+	font-style: normal;
+	text-decoration: none;
+	padding: 8px;
+
+}
+
+a.active {
+	text-decoration: underline;
+}
+
+#navigation {text-align: right;
+padding: 15px;
+text-transform: uppercase;}
+
+footer {text-align:center;
+color: white;
+position: absolute;
+width: 100%;}
