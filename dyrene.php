@@ -11,6 +11,7 @@
 include 'menu.php';?>
 
 <h1>Dyrene</h1>
+<img src="images/dyr.png" id="dyr">
 	
 <?php include 'footer.php';?>
         

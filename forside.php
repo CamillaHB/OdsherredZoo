@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="stylesheet.css">
 <title>Odsherred Zoo</title>
+
+<style>
+body {
+	background-image: url(images/bg-front.jpg) !important;
+	background-size: 100%;
+}
+</style>
 </head>
 
 <body>
