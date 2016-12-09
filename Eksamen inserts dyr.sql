@@ -102,16 +102,16 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
 -- Kategorier
-INSERT INTO kategori (kategori) VALUES ('Primater');
-INSERT INTO kategori (kategori) VALUES ('Fugle');
-INSERT INTO kategori (kategori) VALUES ('Edderkopper');
-INSERT INTO kategori (kategori) VALUES ('Leddyr');
-INSERT INTO kategori (kategori) VALUES ('Padder');
-INSERT INTO kategori (kategori) VALUES ('Krybdyr');
-INSERT INTO kategori (kategori) VALUES ('Snoge & Slanger');
-INSERT INTO kategori (kategori) VALUES ('Gnavere');
-INSERT INTO kategori (kategori) VALUES ('Hovdyr');
-INSERT INTO kategori (kategori) VALUES ('Rovdyr');
+INSERT INTO kategori (id_kategori,billede) VALUES ('1','Images/kategori/primater.png');
+INSERT INTO kategori (id_kategori,billede) VALUES ('2','Images/kategori/fugle.png');
+INSERT INTO kategori (id_kategori,billede) VALUES ('3','Images/kategori/edderkopper.png');
+INSERT INTO kategori (id_kategori,billede) VALUES ('4','Images/kategori/leddyr.png');
+INSERT INTO kategori (id_kategori,billede) VALUES ('5','Images/kategori/padder.png');
+INSERT INTO kategori (id_kategori,billede) VALUES ('6','Images/kategori/skildpadder.png');
+INSERT INTO kategori (id_kategori,billede) VALUES ('7','Images/kategori/slanger.png');
+INSERT INTO kategori (id_kategori,billede) VALUES ('8','Images/kategori/gnavere.png');
+INSERT INTO kategori (id_kategori,billede) VALUES ('9','Images/kategori/hovdyr.png');
+INSERT INTO kategori (id_kategori,billede) VALUES ('10','Images/kategori/rovdyr.png');
 
 -- Oprindelse, Region
 INSERT INTO oprindelse (region) VALUES ('Nord Amerika');
@@ -262,6 +262,7 @@ INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('47','1'
 INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('48','1');
 INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('49','1');
 INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('50','1');
+
 
 -- forskellige billeder pr. dyr. DER ER KUN EKSEMPLER INDTIL VIDERE.
 Update kategori SET billede='images/primater.jpg' WHERE id_kategori = 1;
