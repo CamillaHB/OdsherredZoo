@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS `eksamen`.`kategori` (
   PRIMARY KEY (`id_kategori`)  COMMENT '',
   UNIQUE INDEX `id_kategori_UNIQUE` (`id_kategori` ASC)  COMMENT '')
 ENGINE = InnoDB
-AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -42,7 +41,6 @@ CREATE TABLE IF NOT EXISTS `eksamen`.`dyr` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 51
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -72,7 +70,6 @@ CREATE TABLE IF NOT EXISTS `eksamen`.`oprindelse` (
   `region` VARCHAR(45) NULL DEFAULT NULL COMMENT '',
   PRIMARY KEY (`id_oprindelse`)  COMMENT '')
 ENGINE = InnoDB
-AUTO_INCREMENT = 21
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -267,4 +264,15 @@ INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('49','1'
 INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('50','1');
 
 -- forskellige billeder pr. dyr. DER ER KUN EKSEMPLER INDTIL VIDERE.
-INSERT INTO billeder (billede, fkey_id_dyr) VALUES ('images/1_1.jpg','1');
+Update kategori SET billede='images/primater.jpg' WHERE id_kategori = 1;
+
+SELECT navn, art, billeder.billede, information, region, kategori, kategori.billede, id_kategori, id_oprindelse
+FROM kategori, dyr, billeder, dyr_has_oprindelse, oprindelse
+WHERE id_dyr = 1
+AND id_dyr = billeder.fkey_id_dyr
+AND id_dyr = dyr_has_oprindelse.fkey_id_dyr
+AND fkey_id_oprindelse = id_oprindelse
+AND id_kategori = fkey_id_kategori
+GROUP BY id_dyr ORDER BY id_dyr DESC;
+
+select * from kategori;
