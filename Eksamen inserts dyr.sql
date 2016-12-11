@@ -1,5 +1,5 @@
 -- MySQL Workbench Forward Engineering
-
+drop schema eksamen;
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
@@ -14,104 +14,103 @@ USE `eksamen` ;
 -- Table `eksamen`.`kategori`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eksamen`.`kategori` (
-  `id_kategori` INT(11) NOT NULL AUTO_INCREMENT COMMENT '',
-  `kategori` VARCHAR(45) NULL DEFAULT NULL COMMENT '',
-  `billede` VARCHAR(100) NULL DEFAULT NULL COMMENT '',
+  `id_kategori` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `kategori` VARCHAR(45) NULL COMMENT '',
+  `billede` VARCHAR(100) NULL COMMENT '',
   PRIMARY KEY (`id_kategori`)  COMMENT '',
-  UNIQUE INDEX `id_kategori_UNIQUE` (`id_kategori` ASC)  COMMENT '')
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+  UNIQUE INDEX `kategori_UNIQUE` (`kategori` ASC)  COMMENT '',
+  UNIQUE INDEX `billede_UNIQUE` (`billede` ASC)  COMMENT '')
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `eksamen`.`dyr`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eksamen`.`dyr` (
-  `id_dyr` INT(11) NOT NULL AUTO_INCREMENT COMMENT '',
-  `navn` VARCHAR(75) NULL DEFAULT NULL COMMENT '',
-  `art` VARCHAR(75) NULL DEFAULT NULL COMMENT '',
-  `information` VARCHAR(1000) NULL DEFAULT NULL COMMENT '',
-  `fkey_id_kategori` INT(11) NOT NULL COMMENT '',
+  `id_dyr` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `navn` VARCHAR(75) NOT NULL COMMENT '',
+  `art` VARCHAR(75) NOT NULL COMMENT '',
+  `information` VARCHAR(1000) NULL COMMENT '',
+  `fkey_id_kategori` INT NOT NULL COMMENT '',
   PRIMARY KEY (`id_dyr`, `fkey_id_kategori`)  COMMENT '',
+  INDEX `fk_dyr_kategori2_idx` (`fkey_id_kategori` ASC)  COMMENT '',
   UNIQUE INDEX `art_UNIQUE` (`art` ASC)  COMMENT '',
-  INDEX `fk_dyr_kategori1_idx` (`fkey_id_kategori` ASC)  COMMENT '',
-  CONSTRAINT `fk_dyr_kategori1`
+  CONSTRAINT `fk_dyr_kategori2`
     FOREIGN KEY (`fkey_id_kategori`)
     REFERENCES `eksamen`.`kategori` (`id_kategori`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `eksamen`.`billeder`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eksamen`.`billeder` (
-  `id_billeder` INT(11) NOT NULL AUTO_INCREMENT COMMENT '',
-  `billede` VARCHAR(100) NULL DEFAULT NULL COMMENT '',
-  `fkey_id_dyr` INT(11) NOT NULL COMMENT '',
-  PRIMARY KEY (`id_billeder`, `fkey_id_dyr`)  COMMENT '',
-  INDEX `fk_billeder_dyr1_idx` (`fkey_id_dyr` ASC)  COMMENT '',
-  CONSTRAINT `fk_billeder_dyr1`
-    FOREIGN KEY (`fkey_id_dyr`)
-    REFERENCES `eksamen`.`dyr` (`id_dyr`)
+  `id_billeder` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `billeder` VARCHAR(100) NULL COMMENT '',
+  `fkey_id_dyr` INT NOT NULL COMMENT '',
+  `fkey_kategori_id_kategori` INT NOT NULL COMMENT '',
+  PRIMARY KEY (`id_billeder`, `fkey_id_dyr`, `fkey_kategori_id_kategori`)  COMMENT '',
+  INDEX `fk_billeder_dyr2_idx` (`fkey_id_dyr` ASC, `fkey_kategori_id_kategori` ASC)  COMMENT '',
+  CONSTRAINT `fk_billeder_dyr2`
+    FOREIGN KEY (`fkey_id_dyr` , `fkey_kategori_id_kategori`)
+    REFERENCES `eksamen`.`dyr` (`id_dyr` , `fkey_id_kategori`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `eksamen`.`oprindelse`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eksamen`.`oprindelse` (
-  `id_oprindelse` INT(11) NOT NULL AUTO_INCREMENT COMMENT '',
-  `region` VARCHAR(45) NULL DEFAULT NULL COMMENT '',
-  PRIMARY KEY (`id_oprindelse`)  COMMENT '')
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+  `id_oprindelse` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `region` VARCHAR(45) NULL COMMENT '',
+  PRIMARY KEY (`id_oprindelse`)  COMMENT '',
+  UNIQUE INDEX `region_UNIQUE` (`region` ASC)  COMMENT '')
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `eksamen`.`dyr_has_oprindelse`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eksamen`.`dyr_has_oprindelse` (
-  `fkey_id_dyr` INT(11) NOT NULL COMMENT '',
-  `fkey_id_oprindelse` INT(11) NOT NULL COMMENT '',
-  PRIMARY KEY (`fkey_id_dyr`, `fkey_id_oprindelse`)  COMMENT '',
-  INDEX `fk_dyr_has_oprindelse_oprindelse1_idx` (`fkey_id_oprindelse` ASC)  COMMENT '',
-  INDEX `fk_dyr_has_oprindelse_dyr_idx` (`fkey_id_dyr` ASC)  COMMENT '',
-  CONSTRAINT `fk_dyr_has_oprindelse_dyr`
-    FOREIGN KEY (`fkey_id_dyr`)
-    REFERENCES `eksamen`.`dyr` (`id_dyr`)
+  `fkey_id_dyr` INT NOT NULL COMMENT '',
+  `fkey_kategori_id_kategori` INT NOT NULL COMMENT '',
+  `fkey_id_oprindelse` INT NOT NULL COMMENT '',
+  PRIMARY KEY (`fkey_id_dyr`, `fkey_kategori_id_kategori`, `fkey_id_oprindelse`)  COMMENT '',
+  INDEX `fk_dyr_has_oprindelse1_oprindelse1_idx` (`fkey_id_oprindelse` ASC)  COMMENT '',
+  INDEX `fk_dyr_has_oprindelse1_dyr1_idx` (`fkey_id_dyr` ASC, `fkey_kategori_id_kategori` ASC)  COMMENT '',
+  CONSTRAINT `fk_dyr_has_oprindelse1_dyr1`
+    FOREIGN KEY (`fkey_id_dyr` , `fkey_kategori_id_kategori`)
+    REFERENCES `eksamen`.`dyr` (`id_dyr` , `fkey_id_kategori`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_dyr_has_oprindelse_oprindelse1`
+  CONSTRAINT `fk_dyr_has_oprindelse1_oprindelse1`
     FOREIGN KEY (`fkey_id_oprindelse`)
     REFERENCES `eksamen`.`oprindelse` (`id_oprindelse`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+-- kategori inserts
 
--- Kategorier
-INSERT INTO kategori (id_kategori,billede) VALUES ('1','Images/kategori/primater.png');
-INSERT INTO kategori (id_kategori,billede) VALUES ('2','Images/kategori/fugle.png');
-INSERT INTO kategori (id_kategori,billede) VALUES ('3','Images/kategori/edderkopper.png');
-INSERT INTO kategori (id_kategori,billede) VALUES ('4','Images/kategori/leddyr.png');
-INSERT INTO kategori (id_kategori,billede) VALUES ('5','Images/kategori/padder.png');
-INSERT INTO kategori (id_kategori,billede) VALUES ('6','Images/kategori/skildpadder.png');
-INSERT INTO kategori (id_kategori,billede) VALUES ('7','Images/kategori/slanger.png');
-INSERT INTO kategori (id_kategori,billede) VALUES ('8','Images/kategori/gnavere.png');
-INSERT INTO kategori (id_kategori,billede) VALUES ('9','Images/kategori/hovdyr.png');
-INSERT INTO kategori (id_kategori,billede) VALUES ('10','Images/kategori/rovdyr.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('1','Primater','Images/kategori/primater.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('2','Fugle','Images/kategori/fugle.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('3','Edderkopper','Images/kategori/edderkopper.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('4','Leddyr','Images/kategori/leddyr.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('5','Padder','Images/kategori/padder.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('6','Skildpadder','Images/kategori/skildpadder.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('7','Slanger','Images/kategori/slanger.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('8','Gnavere','Images/kategori/gnavere.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('9','Hovdyr','Images/kategori/hovdyr.png');
+INSERT INTO kategori (id_kategori, kategori, billede) VALUES ('10','Rovdyr','Images/kategori/rovdyr.png');
 
 -- Oprindelse, Region
 INSERT INTO oprindelse (region) VALUES ('Nord Amerika');
@@ -189,91 +188,179 @@ INSERT INTO dyr (navn,art,information,fkey_id_kategori) VALUES ('Snapskildpadde'
 INSERT INTO dyr (navn,art,information,fkey_id_kategori) VALUES ('Æskeskildpadde','Terrapene carolina major','De har en kuppelformet skal, der kan vokse til omkring 20cm i længden. De er generelt mørkbrun eller sort farvede, med gule striber eller pletter.  Mængden af ​pletter og striber kan variere en hel del. De lever oftest omkring flodmundinger og sumpede områder, nær overfladisk, permanente vandområder.','6');
 
 -- Dyrs forskellige oprindelser
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('2','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('2','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('3','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('4','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('5','14');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('6','10');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('7','18');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('8','12');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('9','12');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('10','20');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('11','7');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('11','5');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('11','14');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('11','8');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('12','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('13','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('14','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('15','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('16','8');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('17','14');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('18','18');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('19','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('20','12');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('21','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('21','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('22','14');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('23','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('23','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('24','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('24','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('25','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('25','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('26','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('26','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('27','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('28','18');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('29','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('29','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('29','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('30','18');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('31','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('31','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('32','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('32','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('33','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('33','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('33','5');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('33','6');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('33','14');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('33','12');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('34','18');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('34','15');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('35','14');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('36','20');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('37','18');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('38','14');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('39','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('40','21');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('41','8');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('42','11');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('42','12');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('43','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('43','2');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('43','3');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('44','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('44','21');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('45','21');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('45','14');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('46','7');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('47','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('48','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('49','1');
-INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse) VALUES ('50','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('1','3','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('2','2','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('2','3','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('3','3','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('4','3','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('5','14','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('6','10','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('7','18','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('8','12','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('9','12','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('10','20','1');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('11','7','2');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('11','5','2');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('11','14','2');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('11','8','2');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('12','3','2');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('13','3','3');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('14','3','3');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('15','3','3');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('16','8','4');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('17','14','4');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('18','18','4');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('19','3','5');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('20','12','5');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('21','2','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('21','3','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('22','14','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('23','2','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('23','3','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('24','2','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('24','3','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('25','2','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('25','3','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('26','1','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('26','2','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('27','1','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('28','18','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('29','1','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('29','2','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('29','3','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('30','18','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('31','2','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('31','3','7');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('32','1','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('32','2','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('33','1','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('33','3','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('33','5','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('33','6','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('33','14','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('33','12','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('34','18','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('34','15','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('35','14','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('36','20','8');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('37','18','9');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('38','14','9');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('39','3','9');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('40','21','9');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('41','8','9');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('42','11','9');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('42','12','9');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('43','1','10');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('43','2','10');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('43','3','10');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('44','1','10');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('44','21','10');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('45','21','10');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('45','14','10');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('46','7','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('47','1','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('48','1','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('49','1','6');
+INSERT INTO dyr_has_oprindelse (fkey_id_dyr,fkey_id_oprindelse,fkey_kategori_id_kategori) VALUES ('50','1','6');
 
-
--- forskellige billeder pr. dyr. DER ER KUN EKSEMPLER INDTIL VIDERE.
-Update kategori SET billede='images/primater.jpg' WHERE id_kategori = 1;
-
-SELECT navn, art, billeder.billede, information, region, kategori, kategori.billede, id_kategori, id_oprindelse
-FROM kategori, dyr, billeder, dyr_has_oprindelse, oprindelse
-WHERE id_dyr = 1
-AND id_dyr = billeder.fkey_id_dyr
-AND id_dyr = dyr_has_oprindelse.fkey_id_dyr
-AND fkey_id_oprindelse = id_oprindelse
-AND id_kategori = fkey_id_kategori
-GROUP BY id_dyr ORDER BY id_dyr DESC;
-
-select * from kategori;
+-- billeder
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/1_1.jpg','1','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/1_2.jpg','1','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/2_1.jpg','2','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/2_2.jpg','2','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/3_1.jpg','3','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/3_2.png','3','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/4_1.jpg','4','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/4_2.jpg','4','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/5_1.jpg','5','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/5_2.jpg','5','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/6_1.jpg','6','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/6_2.jpg','6','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/7_1.jpg','7','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/7_2.jpg','7','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/8_1.jpg','8','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/8_2.jpg','8','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/9_1.jpg','9','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/9_2.jpg','9','1');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/10_1.jpg','10','2');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/10_2.jpg','10','2');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/11_1.jpg','11','2');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/11_2.jpg','11','2');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/12_1.jpg','12','2');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/12_2.jpg','12','2');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/13_1.jpg','13','3');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/13_2.jpg','13','3');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/14_1.jpg','14','3');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/14_2.jpg','14','3');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/15_1.jpg','15','3');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/15_2.jpg','15','3');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/16_1.jpg','16','4');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/16_2.jpg','16','4');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/17_1.jpg','17','4');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/17_2.jpg','17','4');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/18_1.jpg','18','4');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/18_2.jpg','18','4');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/19_1.jpg','19','5');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/19_2.jpg','19','5');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/20_1.jpg','20','5');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/20_2.jpg','20','5');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/21_1.jpg','21','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/21_2.jpg','21','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/22_1.jpg','22','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/22_2.jpg','22','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/23_1.jpg','23','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/23_2.jpg','23','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/24_1.jpg','24','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/24_2.jpg','24','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/25_1.jpg','25','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/25_2.jpg','25','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/26_1.jpg','26','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/26_2.jpg','26','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/27_1.jpg','27','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/27_2.jpg','27','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/28_1.jpg','28','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/28_2.jpg','28','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/29_1.jpg','29','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/29_2.jpg','29','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/30_1.jpg','30','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/30_2.jpg','30','7');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/31_1.jpg','31','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/31_2.jpg','31','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/32_1.jpg','32','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/32_2.jpg','32','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/33_1.jpg','33','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/33_2.jpg','33','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/34_1.jpg','34','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/34_2.jpg','34','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/35_1.jpg','35','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/35_2.jpg','35','8');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/36_1.jpg','36','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/36_2.jpg','36','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/37_1.jpg','37','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/37_2.jpg','37','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/38_1.jpg','38','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/38_2.jpg','38','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/39_1.jpg','39','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/39_2.jpg','39','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/40_1.jpg','40','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/40_2.jpg','40','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/41_1.jpg','41','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/41_2.jpg','41','9');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/42_1.jpg','42','10');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/42_2.jpg','42','10');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/43_1.jpg','43','10');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/43_2.jpg','43','10');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/44_1.jpg','44','10');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/44_2.jpg','44','10');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/45_1.jpg','45','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/45_2.jpg','45','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/46_1.jpg','46','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/46_2.jpg','46','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/47_1.jpg','47','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/47_2.jpg','47','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/48_1.jpg','48','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/48_2.jpg','48','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/49_1.jpg','49','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/49_2.jpg','49','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/50_1.jpg','50','6');
+INSERT INTO billeder (billeder,fkey_id_dyr,fkey_kategori_id_kategori) VALUES ('images/billeder/50_2.jpg','50','6');

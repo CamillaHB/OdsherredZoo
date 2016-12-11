@@ -10,7 +10,7 @@
 <?PHP
 require_once 'dbconfig.php';
 $id_dyr = filter_input(INPUT_GET, 'id_dyr', FILTER_VALIDATE_INT) or die('missing parameter'); 
-$sql = 'SELECT navn, art, billeder.billede, information, region, kategori, kategori.billede, id_kategori, id_oprindelse
+$sql = 'SELECT navn, art, billeder.billeder, information, region, kategori, kategori.billede, id_kategori, id_oprindelse
 FROM kategori, dyr, billeder, dyr_has_oprindelse, oprindelse
 WHERE id_dyr = ?
 AND id_dyr = billeder.fkey_id_dyr
@@ -23,8 +23,8 @@ $stmt->bind_param('i', $id_dyr);
 $stmt->execute();
 $stmt->bind_result($navn, $art, $billede, $info, $region, $kategori, $kbil, $id_kat, $id_oprindelse);
 while($stmt->fetch()){
-	echo '<h1>'.$navn.'</h1><img href="'.$billede.'" alt="'.$navn.'"><p>'.$info.'</p><p>'.$region.'</p>';
-    echo '<p>andre<a href="kategori.php?id_kategori='.$id_kat.'"><img href="'.$kbil.'" alt='.$kategori.'></a><p>andre dyr fra</p><a href="steder.php?id_oprindelse='.$id_oprindelse.'">'.$region.'</a>';
+	echo '<h1>'.$navn.'</h1><img class="dyr" src="'.$billede.'" alt="'.$navn.'"><p>'.$info.'</p><p>'.$region.'</p>';
+    echo '<p>andre<a href="kategori.php?id_kategori='.$id_kat.'"><img class="dyr" src="'.$kbil.'" alt='.$kategori.'></a><p>andre dyr fra</p><a href="steder.php?id_oprindelse='.$id_oprindelse.'">'.$region.'</a>';
 }
 ?>	
 <?php include 'footer.php';?>

@@ -7,11 +7,10 @@
 </head>
     
 <?PHP include 'menu.php'; ?>
-<ul>
 <?PHP
 require_once 'dbconfig.php';
 $id_oprindelse = filter_input(INPUT_GET, 'id_oprindelse', FILTER_VALIDATE_INT) or die('Noget gik galt!'); 
-$sql = 'SELECT navn, billeder.billede, id_dyr, region
+$sql = 'SELECT navn, billeder.billeder, id_dyr, region
 FROM dyr, billeder, dyr_has_oprindelse, oprindelse
 WHERE id_oprindelse = ?
 AND id_dyr = billeder.fkey_id_dyr
@@ -22,11 +21,16 @@ $stmt = $link->prepare($sql);
 $stmt->bind_param('i', $id_oprindelse);
 $stmt->execute();
 $stmt->bind_result($navn, $billede, $id_dyr, $region);
+$check=0;
 while($stmt->fetch()){
-	echo '<h1>dyr fra '.$region.'</h1><li><a href="dyr.php?id_dyr='.$id_dyr.'"><img href="'.$billede.'" alt="'.$navn.'"></a></li>';
+
+if ($check==0) {
+    echo  '<h1>dyr fra '.$region.'</h1>';
+    $check++;
 }
-?>
-</ul>	
+	echo '<a href="dyr.php?id_dyr='.$id_dyr.'"><img class="dyr" src="'.$billede.'" alt="'.$navn.'"></a>';
+}
+?>	
 <?php include 'footer.php';?>
         
 </body>
