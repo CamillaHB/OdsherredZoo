@@ -3,6 +3,7 @@
 <?    
 <head>
 <meta charset="UTF-8">
+<meta name="description" content="Odsherred Zoo Rescue er danmarks eneste rescue zoo. Læs og lær om de forskellige dyr vi har i parken. Vi har bl.a. mange forskellige aber, fugle, reptiler, slanger og edderkopper!">
 <script src="js/responsive-nav.js" type="text/javascript"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="js/fade.js" type="text/javascript"></script>
